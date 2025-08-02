@@ -1,8 +1,8 @@
 import { Component, signal, effect, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Socket, io } from 'socket.io-client';
-import { AuthService } from './auth.service';
-import { environment } from '../environments/environment';
+import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageModule } from 'primeng/message';
@@ -22,19 +22,8 @@ interface Message {
   selector: 'app-chat',
   standalone: true,
   imports: [CommonModule, FormsModule, MessageModule, InputTextModule, ButtonModule, SelectModule],
-  template: `
-    <h1>Чат</h1>
-    <p-select [options]="languages()" [(ngModel)]="selectedLanguage" optionLabel="name" optionValue="code" (onChange)="saveLanguage()"></p-select>
-    <p-button (click)="authService.logout()">Выход</p-button>
-    <div class="chat-messages">
-      @for (msg of messages(); track msg.timestamp) {
-        <p-message>{{ msg.text }}</p-message>
-      }
-    </div>
-    <input pInputText [(ngModel)]="newMessage" />
-    <p-button (click)="sendMessage()">Отправить</p-button>
-  `,
-  styles: [`.chat-messages { height: 400px; overflow-y: scroll; }`]
+  templateUrl: './chat.component.html',
+  styleUrl: 'chat.component.scss'
 })
 export class ChatComponent implements OnInit {
   public authService = inject(AuthService);

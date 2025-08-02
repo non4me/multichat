@@ -1,0 +1,10 @@
+<h1>Чат</h1>
+<p-select [options]="languages()" [(ngModel)]="selectedLanguage" optionLabel="name" optionValue="code" (onChange)="saveLanguage()"></p-select>
+<p-button (click)="authService.logout()">Выход</p-button>
+<div class="chat-messages">
+  @for (msg of messages(); track msg.timestamp) {
+    <p-message>{{ msg.text }}</p-message>
+  }
+</div>
+<input pInputText [(ngModel)]="newMessage" />
+<p-button (click)="sendMessage()">Отправить</p-button>
