@@ -2,7 +2,8 @@
   "send": "Отправить",
   "email": "Email",
   "password": "Пароль",
-  "login": "Зайти как гость",
+  "sing-in": "Sing-in",
+  "anonymous-login": "Зайти анонимно",
   "google-login": "Зайти через Google",
   "message" : {
     "placeholder": "Введите сообщение..."

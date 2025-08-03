@@ -2,7 +2,8 @@
   "send": "Send",
   "email": "Email",
   "password": "Password",
-  "login": "Login as guest",
+  "sing-in": "Sing-in",
+  "anonymous-login": "Anonymous login",
   "google-login": "Login with Google",
   "message" : {
     "placeholder": "Enter your message..."

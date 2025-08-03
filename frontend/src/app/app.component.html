@@ -7,36 +7,46 @@
 
 @if (!authService.isLoggedIn()) {
   <h1>Авторизация</h1>
-  <div class="flex flex-col gap-6 w-full sm:w-auto">
-    <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-      <div class="flex-auto">
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-at"></i>
-          </p-inputgroup-addon>
-          <input class="p-8!" pInputText [(ngModel)]="email" type="email" [placeholder]="'email' | translate"/>
-        </p-inputgroup>
-      </div>
-      <div class="flex-auto">
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-key"></i>
-          </p-inputgroup-addon>
-          <input class="p-8!" pInputText [(ngModel)]="password" type="password" placeholder="Password"/>
-        </p-inputgroup>
+
+  @if(0) {
+    <div class="flex flex-col gap-6 w-full sm:w-auto">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+        <div class="flex-auto">
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-at"></i>
+            </p-inputgroup-addon>
+            <input class="p-8!" pInputText [(ngModel)]="email" type="email" [placeholder]="'email' | translate"/>
+          </p-inputgroup>
+        </div>
+        <div class="flex-auto">
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-key"></i>
+            </p-inputgroup-addon>
+            <input class="p-8!" pInputText [(ngModel)]="password" type="password" placeholder="Password"/>
+          </p-inputgroup>
+        </div>
       </div>
     </div>
-  </div>
 
-
-    <p-button (click)="authService.signIn(email, password)">
+    <p-button (click)="authService.signIn(email, password)" class="m-8">
       {{ 'login' | translate }}
     </p-button>
-    <p-button (click)="authService.signInWithGoogle()">
+  }
+
+    <p-button (click)="authService.anonymousLogin()" class="m-8">
+      {{ 'anonymous-login' | translate }}
+    </p-button>
+
+    <p-button (click)="authService.signInWithGoogle()" class="m-8">
       {{ 'google-login' | translate }}
     </p-button>
   <div>
     <a href="" (click)="authService.signUp(email, password)">Регистрация</a>
+  </div>
+  <div>
+    {{ authService.errorMessage() }}
   </div>
 } @else () {
   <router-outlet></router-outlet>
