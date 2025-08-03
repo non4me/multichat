@@ -1,0 +1,10 @@
+{
+  "send": "Отправить",
+  "email": "Email",
+  "password": "Пароль",
+  "login": "Зайти как гость",
+  "google-login": "Зайти через Google",
+  "message" : {
+    "placeholder": "Введите сообщение..."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "send": "Send",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login as guest",
+  "google-login": "Login with Google",
+  "message" : {
+    "placeholder": "Enter your message..."
+  }
+}

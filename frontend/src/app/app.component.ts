@@ -1,29 +1,37 @@
-import { Component, signal } from '@angular/core';
-import { AuthService } from './auth.service';
-import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
+import {Component, inject, signal} from '@angular/core';
+import {AuthService} from './auth.service';
+import {RouterOutlet} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {LanguageService} from './language.service';
+import {InputGroup} from 'primeng/inputgroup';
+import {InputGroupAddon} from 'primeng/inputgroupaddon';
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule, ButtonModule, InputTextModule],
-  template: `
-    <div *ngIf="!authService.isLoggedIn()">
-      <h1>Авторизация</h1>
-      <input pInputText [(ngModel)]="email" placeholder="Email" />
-      <input pInputText [(ngModel)]="password" type="password" placeholder="Password" />
-      <p-button (click)="authService.signUp(email, password)">Регистрация</p-button>
-      <p-button (click)="authService.signIn(email, password)">Вход</p-button>
-      <p-button (click)="authService.signInWithGoogle()">Вход через Google</p-button>
-    </div>
-    <router-outlet *ngIf="authService.isLoggedIn()"></router-outlet>
-  `
+  imports: [TranslateModule, RouterOutlet, CommonModule, FormsModule, ButtonModule, InputTextModule, InputGroup, InputGroupAddon],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   email = '';
   password = '';
-  constructor(public authService: AuthService) {}
+  currentLang = signal<string>('en');
+
+  public authService = inject(AuthService);
+  private languageService = inject(LanguageService);
+
+  constructor() {
+    const savedLanguage = this.languageService.loadLanguage();
+    this.currentLang.set(savedLanguage);
+  }
+
+  changeLanguage() {
+    const language: string = this.currentLang();
+    this.languageService.setLanguage(language);
+  }
 }

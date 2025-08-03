@@ -3,6 +3,12 @@
   overflow-y: scroll;
 }
 
+.messages { height: 300px; overflow-y: auto; }
+
+.message { padding: 10px; border-bottom: 1px solid #eee; }
+
+.input-container { display: flex; gap: 10px; }
+
 emoji-picker {
   width: 100%;
   max-height: 300px;

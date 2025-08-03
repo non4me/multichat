@@ -1,80 +1,57 @@
-import { Component, signal, effect, inject, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Socket, io } from 'socket.io-client';
-import { AuthService } from '../auth.service';
-import { environment } from '../../environments/environment';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MessageModule } from 'primeng/message';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
+import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {MessageModule} from 'primeng/message';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {SelectModule} from 'primeng/select';
+import 'emoji-picker-element';
+import {LanguageService} from '../language.service';
+import {TranslateModule} from '@ngx-translate/core';
+import {AuthService} from '../auth.service';
 
 interface Message {
   user: string;
   text: string;
   translatedText?: string;
   sourceLang: string;
+  emoji?: string;
   timestamp: Date;
 }
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, MessageModule, InputTextModule, ButtonModule, SelectModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [TranslateModule, CommonModule, FormsModule, MessageModule, InputTextModule, ButtonModule, SelectModule],
   templateUrl: './chat.component.html',
   styleUrl: 'chat.component.scss'
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent {
+  messages = signal<{ id: number; text: string; emoji: string }[]>([]);
+  newMessage = signal('');
+  showEmojiPicker = signal(false);
+
   public authService = inject(AuthService);
-  private http = inject(HttpClient);
-  private socket: Socket;
+  private messageId = 0;
 
-  messages = signal<Message[]>([]);
-  displayMessages = signal<any[]>([]); // Для PrimeNG p-messages
-  newMessage = '';
-  languages = signal<any[]>([]);
-  selectedLanguage = signal(localStorage.getItem('language') || 'en');
-
-  constructor() {
-    effect(() => {
-      // Обновляем отображаемые сообщения с переводом
-      const msgs = this.messages().map(async (msg) => {
-        let text = msg.text;
-        if (msg.sourceLang !== this.selectedLanguage()) {
-          text = await this.translateText(msg.text, this.selectedLanguage(), msg.sourceLang);
-        }
-        return { severity: 'info', summary: msg.user, detail: `${text} (${new Date(msg.timestamp).toLocaleTimeString()})` };
-      });
-      Promise.all(msgs).then(res => this.displayMessages.set(res));
-    });
+  toggleEmojiPicker() {
+    this.showEmojiPicker.set(!this.showEmojiPicker());
   }
 
-  ngOnInit() {
-    // Загрузка языков из конфига
-    this.http.get('/assets/languages.json').subscribe((langs: any) => this.languages.set(langs));
-
-    // Socket соединение с токеном
-    this.authService.currentUser()?.getIdToken().then((token: string) => {
-      this.socket = io(environment.backendUrl, { auth: { token } });
-      this.socket.on('message', (msg: Message) => {
-        this.messages.update(msgs => [...msgs, msg]);
-      });
-    });
+  addEmoji(event: any) {
+    const emoji = event.detail.unicode;
+    this.newMessage.set(this.newMessage() + emoji);
   }
 
   sendMessage() {
-    if (this.newMessage) {
-      this.socket.emit('message', { text: this.newMessage, sourceLang: this.selectedLanguage() });
-      this.newMessage = '';
+    if (this.newMessage().trim()) {
+      this.messages.update(messages => [
+        ...messages,
+        {id: this.messageId++, text: this.newMessage(), emoji: ''}
+      ]);
+      this.newMessage.set('');
+      this.showEmojiPicker.set(false);
     }
-  }
-
-  async translateText(text: string, targetLang: string, sourceLang: string): Promise<string> {
-    return this.http.post<{ translatedText: string }>(`${environment.backendUrl}/translate`, { text, targetLang, sourceLang }).toPromise().then(res => res.translatedText);
-  }
-
-  saveLanguage() {
-    localStorage.setItem('language', this.selectedLanguage());
   }
 }
