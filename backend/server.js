@@ -4,64 +4,60 @@ const http = require('http');
 const socketIo = require('socket.io');
 const admin = require('firebase-admin');
 const cors = require('cors');
-const { Translate } = require('@google-cloud/translate').v2;
+const {Translate} = require('@google-cloud/translate').v2;
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
-  cors: { origin: 'http://localhost:4200', methods: ['GET', 'POST'] }
+    cors: {origin: 'http://localhost:4200', methods: ['GET', 'POST']}
 });
 
 app.use(cors());
 app.use(express.json());
 
-// Инициализация Firebase Admin
 const serviceAccount = require('./firebase.json');
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
-// Инициализация Google Translate
-const translate = new Translate({ key: process.env.GOOGLE_API_KEY });
+const translate = new Translate({key: process.env.GOOGLE_API_KEY});
 
-// Эндпоинт для перевода (прокси)
 app.post('/translate', async (req, res) => {
-  const { text, targetLang, sourceLang } = req.body;
-  try {
-    const [translation] = await translate.translate(text, { from: sourceLang, to: targetLang });
-    res.json({ translatedText: translation });
-  } catch (error) {
-    res.status(500).json({ error: 'Translation failed' });
-  }
+    const {text, targetLang, sourceLang} = req.body;
+    try {
+        const [translation] = await translate.translate(text, {from: sourceLang, to: targetLang});
+        res.json({translatedText: translation});
+    } catch (error) {
+        res.status(500).json({error: 'Translation failed'});
+    }
 });
 
-// Socket.IO с авторизацией
 io.use(async (socket, next) => {
-  const token = socket.handshake.auth.token;
-  if (!token) return next(new Error('Authentication error'));
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    socket.user = decodedToken;
-    next();
-  } catch (error) {
-    next(new Error('Invalid token'));
-  }
+    const token = socket.handshake.auth.token;
+    if (!token) return next(new Error('Authentication error'));
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        socket.user = decodedToken;
+        next();
+    } catch (error) {
+        next(new Error('Invalid token'));
+    }
 });
 
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.user.email}`);
+    console.log(`User connected: ${socket.user.email}`);
 
-  socket.on('message', (data) => {
-    const message = {
-      user: socket.user.email,
-      text: data.text,
-      sourceLang: data.sourceLang,
-      timestamp: new Date()
-    };
-    io.emit('message', message); // Бroadcast оригинального сообщения
-  });
+    socket.on('message', (data) => {
+        const message = {
+            user: socket.user.email,
+            text: data.text,
+            sourceLang: data.sourceLang,
+            timestamp: new Date()
+        };
+        io.emit('message', message);
+    });
 
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.user.email}`);
-  });
+    socket.on('disconnect', () => {
+        console.log(`User disconnected: ${socket.user.email}`);
+    });
 });
 
 server.listen(3000, () => console.log('Server running on port 3000'));

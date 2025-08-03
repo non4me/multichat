@@ -1,14 +1,18 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {
   Auth,
+  authState,
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInAnonymously,
+  signInWithCustomToken,
   signInWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider,
-  signOut, signInAnonymously
+  signOut
 } from '@angular/fire/auth';
+import { browserLocalPersistence, setPersistence } from 'firebase/auth';
 import {TranslateService} from '@ngx-translate/core';
-import {pipe, take} from 'rxjs';
+import {take} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -20,19 +24,19 @@ export class AuthService {
   errorMessage = signal<string>('');
 
   constructor() {
-    this.autoLogin();
-  }
-
-  async autoLogin() {
-    try {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-      if (currentUser) {
-        this.currentUser.set(currentUser);
-        this.isLoggedIn.set(true);
-      }
-    } catch (error) {
-    }
+    setPersistence(this.auth, browserLocalPersistence)
+      .then(() => {
+        authState(this.auth).subscribe((user) => {
+          this.currentUser.set(user);
+          this.isLoggedIn.set(!!user);
+          if (user) {
+            console.log('User automatically logged in:', user.uid);
+          }
+        });
+      })
+      .catch((error) => {
+        console.error('Persistence error:', error);
+      });
   }
 
   async anonymousLogin() {
@@ -83,6 +87,16 @@ export class AuthService {
     this.currentUser.set(null);
     localStorage.removeItem('currentUser');
     this.isLoggedIn.set(false);
+  }
+
+  private async loginWithAccessToken(accessToken: string) {
+    try {
+      const userCredential = await signInWithCustomToken(this.auth, accessToken);
+      this.currentUser.set(userCredential.user);
+      this.successfulLogin();
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   }
 
   private successfulLogin() {
