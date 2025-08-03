@@ -39,17 +39,8 @@ export class ChatComponent implements OnInit {
   public authService = inject(AuthService);
   private languageService = inject(LanguageService);
   private currentUser = this.authService.currentUser();
-  private socket: Socket; // = io(environment.backendUrl, {auth: {token: this.currentUser?.stsTokenManager.accessToken}})
+  private socket: Socket;
   private messageId = 0;
-
-  // constructor() {
-  //   this.socket.on('message', (data: Message) => {
-  //     this.messages.update(messages => [
-  //       ...messages,
-  //       data
-  //     ]);
-  //   });
-  // }
 
   ngOnInit() {
     this.authService.currentUser()?.getIdToken().then((token: string) => {
@@ -81,11 +72,6 @@ export class ChatComponent implements OnInit {
         emoji: '',
         timestamp: new Date()
       };
-
-      // this.messages.update(messages => [
-      //   ...messages,
-      //   newMessage
-      // ]);
 
       this.socket.emit('message', newMessage);
 
