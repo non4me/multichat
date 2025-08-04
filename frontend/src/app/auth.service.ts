@@ -5,19 +5,20 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInAnonymously,
-  signInWithCustomToken,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut
 } from '@angular/fire/auth';
-import { browserLocalPersistence, setPersistence } from 'firebase/auth';
+import {browserLocalPersistence, setPersistence} from 'firebase/auth';
 import {TranslateService} from '@ngx-translate/core';
 import {take} from 'rxjs';
+import {SocketServices} from './socket.services';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
   private auth = inject(Auth);
   private translate = inject(TranslateService);
+  private socketService = inject(SocketServices);
 
   currentUser = signal(null);
   isLoggedIn = signal(false);
@@ -30,6 +31,8 @@ export class AuthService {
           this.currentUser.set(user);
           this.isLoggedIn.set(!!user);
           if (user) {
+            this.successfulLogin();
+
             console.log('User automatically logged in:', user.uid);
           }
         });
@@ -85,21 +88,16 @@ export class AuthService {
   async logout() {
     await signOut(this.auth);
     this.currentUser.set(null);
+    this.socketService.logout()
     localStorage.removeItem('currentUser');
     this.isLoggedIn.set(false);
   }
 
-  private async loginWithAccessToken(accessToken: string) {
-    try {
-      const userCredential = await signInWithCustomToken(this.auth, accessToken);
-      this.currentUser.set(userCredential.user);
-      this.successfulLogin();
-    } catch (error) {
-      console.error('Login error:', error);
-    }
-  }
-
   private successfulLogin() {
+    this.currentUser()?.getIdToken().then((token: string) => {
+      this.socketService.initSocket(token, this.currentUser());
+    });
+
     localStorage.setItem('currentUser', JSON.stringify(this.currentUser()));
     this.isLoggedIn.set(true);
   }

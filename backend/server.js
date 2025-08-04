@@ -4,7 +4,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const admin = require('firebase-admin');
 const cors = require('cors');
-const {Translate} = require('@google-cloud/translate').v2;
+const deepl = require('deepl-node');
 
 const app = express();
 const server = http.createServer(app);
@@ -18,24 +18,41 @@ app.use(express.json());
 const serviceAccount = require('./firebase.json');
 admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
-const translate = new Translate({key: process.env.GOOGLE_API_KEY});
+const translator = new deepl.Translator(process.env.DEEPL_API_KEY);
+const connections = new Set()
 
-app.post('/translate', async (req, res) => {
-    const {text, targetLang, sourceLang} = req.body;
-    try {
-        const [translation] = await translate.translate(text, {from: sourceLang, to: targetLang});
-        res.json({translatedText: translation});
-    } catch (error) {
-        res.status(500).json({error: 'Translation failed'});
+async function asyncForEachParallel(set, callback) {
+    await Promise.all([...set].map(item => callback(item)));
+}
+
+function mapLang(lang) {
+    return lang === 'en' ? 'en-GB' : lang;
+}
+
+function translateMessage(originalMessage) {
+    return async (socket) => {
+        const fromLang = originalMessage.sourceLang;
+        const toLang = socket.user.lang;
+        const result = fromLang === toLang
+            ? {text: originalMessage.text}
+            : await translator.translateText(originalMessage.text, fromLang, mapLang(toLang));
+        const message = {
+            user: socket.user,
+            text: result.text,
+            timestamp: new Date()
+        };
+
+        socket.emit('message', message);
     }
-});
+}
 
 io.use(async (socket, next) => {
     const token = socket.handshake.auth.token;
+
     if (!token) return next(new Error('Authentication error'));
+
     try {
-        const decodedToken = await admin.auth().verifyIdToken(token);
-        socket.user = decodedToken;
+        socket.user = await admin.auth().verifyIdToken(token);
         next();
     } catch (error) {
         next(new Error('Invalid token'));
@@ -43,20 +60,28 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', (socket) => {
-    console.log(`User connected: ${socket.user.email}`);
+    const getUserInfo = (socketUser) => {
+        const {name, email, provider_id, user_id} = socketUser;
+
+        return name ? `${name}: (${email})` : `${provider_id}: ${user_id}`;
+    }
+
+    connections.add(socket);
+
+    console.log(`User connected: ${getUserInfo(socket.user)}`); // JSON.stringify(socket.user)
+
+    socket.on('language', (data) => {
+        console.log(`For ${getUserInfo(socket.user)} set language: ${data}`);
+        socket.user.lang = data;
+    });
 
     socket.on('message', (data) => {
-        const message = {
-            user: socket.user.email,
-            text: data.text,
-            sourceLang: data.sourceLang,
-            timestamp: new Date()
-        };
-        io.emit('message', message);
+        asyncForEachParallel(connections, translateMessage(data));
     });
 
     socket.on('disconnect', () => {
-        console.log(`User disconnected: ${socket.user.email}`);
+        connections.delete(socket);
+        console.log(`User disconnected: ${getUserInfo(socket.user)}`);
     });
 });
 
