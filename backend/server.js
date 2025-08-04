@@ -25,7 +25,7 @@ async function asyncForEachParallel(set, callback) {
     await Promise.all([...set].map(item => callback(item)));
 }
 
-function mapLang(lang) {
+function getLocaleIdentifier(lang) {
     return lang === 'en' ? 'en-GB' : lang;
 }
 
@@ -35,7 +35,7 @@ function translateMessage(originalMessage) {
         const toLang = socket.user.lang;
         const result = fromLang === toLang
             ? {text: originalMessage.text}
-            : await translator.translateText(originalMessage.text, fromLang, mapLang(toLang));
+            : await translator.translateText(originalMessage.text, fromLang, getLocaleIdentifier(toLang));
         const message = {
             user: socket.user,
             text: result.text,
