@@ -5,7 +5,6 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "@google-cloud/translate": "^8.0.0",
     "cors": "^2.8.5",
     "deepl-node": "^1.19.0",
     "dotenv": "^16.4.5",

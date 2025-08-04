@@ -19,11 +19,7 @@ const serviceAccount = require('./firebase.json');
 admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
 const translator = new deepl.Translator(process.env.DEEPL_API_KEY);
-const connections = new Set()
-
-async function asyncForEachParallel(set, callback) {
-    await Promise.all([...set].map(item => callback(item)));
-}
+const connections = new Set();
 
 function getLocaleIdentifier(lang) {
     return lang === 'en' ? 'en-GB' : lang;
@@ -68,15 +64,15 @@ io.on('connection', (socket) => {
 
     connections.add(socket);
 
-    console.log(`User connected: ${getUserInfo(socket.user)}`); // JSON.stringify(socket.user)
+    console.log(`User connected: ${getUserInfo(socket.user)}`);
 
     socket.on('language', (data) => {
         console.log(`For ${getUserInfo(socket.user)} set language: ${data}`);
         socket.user.lang = data;
     });
 
-    socket.on('message', (data) => {
-        asyncForEachParallel(connections, translateMessage(data));
+    socket.on('message', async (message) => {
+        await Promise.all([...connections].map(socket => translateMessage(message)(socket)));
     });
 
     socket.on('disconnect', () => {
