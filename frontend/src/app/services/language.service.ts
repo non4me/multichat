@@ -1,4 +1,4 @@
-import {inject, Injectable, Signal, signal} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {HttpClient} from '@angular/common/http';
 
