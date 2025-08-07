@@ -4,8 +4,8 @@ module.exports = {
     "./src/**/*.{html,ts,scss}",
     "./node_modules/primeng/**/*.{js,ts,html}"
   ],
-  theme: { extend: {} },
+  theme: {extend: {}},
   plugins: [require('tailwindcss-primeui')],
-  corePlugins: { preflight: true },
+  corePlugins: {preflight: true},
   darkMode: ['selector', '[class~="my-app-dark"]'],
 };

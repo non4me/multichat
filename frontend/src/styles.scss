@@ -1,20 +1,6 @@
 @use "primeicons/primeicons.css"; // PrimeIcons
+@use "tailwindcss";
+
 @plugin "tailwindcss-primeui";
-
-
-@layer tailwind-base, primeng, tailwind-utilities;
-
-@layer tailwind-base {
-  @tailwind base; // Tailwind preflight
-}
-
-@layer primeng {
-  // PrimeNG styles
-}
-
-@layer tailwind-utilities {
-  @tailwind components;
-  @tailwind utilities;
-}
 
 @custom-variant dark (&:where(.my-app-dark, .my-app-dark *));

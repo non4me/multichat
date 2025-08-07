@@ -7,8 +7,8 @@ import {ButtonModule} from 'primeng/button';
 import {SelectModule} from 'primeng/select';
 import {TranslateModule} from '@ngx-translate/core';
 import 'emoji-picker-element';
-import {SocketServices} from '../socket.services';
-import {AuthService} from '../auth.service';
+import {SocketServices} from '../../services/socket.services';
+import {AuthService} from '../../services/auth.service';
 import {Dialog} from 'primeng/dialog';
 
 @Component({
