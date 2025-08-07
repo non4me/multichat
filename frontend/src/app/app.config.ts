@@ -1,4 +1,4 @@
-import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {provideTranslateHttpLoader} from '@ngx-translate/http-loader';
 import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
@@ -15,7 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideZoneChangeDetection({eventCoalescing: true}),
+    // provideZoneChangeDetection({eventCoalescing: true}),
+    provideZonelessChangeDetection(),
     provideAuth(() => getAuth()),
     providePrimeNG({
       theme: {
