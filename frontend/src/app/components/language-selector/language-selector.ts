@@ -20,7 +20,5 @@ export class LanguageSelector {
 
   onLanguageChange(event: any): void {
     this.languageService.setLanguage(event.value);
-    // Emit language change to server via Socket.IO (if needed)
-    // socket.emit('languageChange', this.selectedLanguage);
   }
 }
