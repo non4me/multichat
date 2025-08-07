@@ -1,8 +1,32 @@
 [
-  {"code": "ru", "name": "Русский"},
-  {"code": "en", "name": "English"},
-  {"code": "de", "name": "Deutsch"},
-  {"code": "es", "name": "Español"},
-  {"code": "cs", "name": "Čeština"},
-  {"code": "zh", "name": "中文"}
+  {
+    "code": "ru",
+    "name": "Русский",
+    "locale": "ru-RU"
+  },
+  {
+    "code": "en",
+    "name": "English",
+    "locale": "en-US"
+  },
+  {
+    "code": "de",
+    "name": "Deutsch",
+    "locale": "de-DE"
+  },
+  {
+    "code": "es",
+    "name": "Español",
+    "locale": "es-ES"
+  },
+  {
+    "code": "cs",
+    "name": "Čeština",
+    "locale": "cs-CZ"
+  },
+  {
+    "code": "zh",
+    "name": "中文",
+    "locale": "zh-CN"
+  }
 ]
