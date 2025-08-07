@@ -2,7 +2,7 @@
   <p-button label="Logout" (click)="authService.logout()"></p-button>
 
   <div class="messages">
-    @for (message of messages(); track message.id) {
+    @for (message of messages(); track message.timestamp) {
       <div class="message">
         {{ message.text }} {{ message.emoji }}
       </div>
@@ -10,11 +10,26 @@
   </div>
 
   <div class="input-container">
-    <input type="text" [(ngModel)]="newMessage" placeholder="{{ 'message.placeholder' | translate }}"/>
-    <button (click)="toggleEmojiPicker()">😊</button>
-    @if (showEmojiPicker()) {
+    <input type="text"
+           (keyup.enter)="sendMessage()"
+           [(ngModel)]="newMessage"
+           placeholder="{{ 'message.placeholder' | translate }}"/>
+
+    <button (click)="showDialog()">😊</button>
+
+    <p-dialog
+      [header]="'select-emoji' | translate"
+      [(visible)]="isModalVisible"
+      [modal]="true"
+      [style]="{ width: '400px' }"
+      [draggable]="false"
+      [resizable]="false"
+      class="rounded-lg"
+      (onHide)="onModalClose()"
+    >
       <emoji-picker (emoji-click)="addEmoji($event)"></emoji-picker>
-    }
+    </p-dialog>
+
     <button (click)="sendMessage()">{{ 'send' | translate }}</button>
   </div>
 </div>

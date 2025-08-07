@@ -5,6 +5,7 @@
   "sing-in": "Sing-in",
   "anonymous-login": "Зайти анонимно",
   "google-login": "Зайти через Google",
+  "select-emoji": "Выберите эмодзи",
   "message" : {
     "placeholder": "Введите сообщение..."
   }
