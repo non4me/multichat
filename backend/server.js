@@ -20,12 +20,17 @@ admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
 const translator = new deepl.Translator(process.env.DEEPL_API_KEY);
 const connections = new Set();
+const getUserInfo = (socketUser) => {
+    const {name, email, provider_id, user_id} = socketUser;
+
+    return name ? `${name}: (${email})` : `${provider_id}: ${user_id}`;
+}
 
 function getLocaleIdentifier(lang) {
     return lang === 'en' ? 'en-GB' : lang;
 }
 
-function translateMessage(originalMessage) {
+function translateMessage(originalMessage, sender) {
     return async (socket) => {
         const fromLang = originalMessage.sourceLang;
         const toLang = socket.user.lang;
@@ -34,6 +39,7 @@ function translateMessage(originalMessage) {
             : await translator.translateText(originalMessage.text, fromLang, getLocaleIdentifier(toLang));
         const message = {
             ...originalMessage,
+            userName: getUserInfo(sender),
             text: result.text
         };
 
@@ -55,12 +61,6 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', (socket) => {
-    const getUserInfo = (socketUser) => {
-        const {name, email, provider_id, user_id} = socketUser;
-
-        return name ? `${name}: (${email})` : `${provider_id}: ${user_id}`;
-    }
-
     connections.add(socket);
 
     console.log(`User connected: ${getUserInfo(socket.user)}`);
@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('message', async (message) => {
-        await Promise.all([...connections].map(socket => translateMessage(message)(socket)));
+        await Promise.all([...connections].map(s => translateMessage(message, socket.user)(s)));
     });
 
     socket.on('disconnect', () => {

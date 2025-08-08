@@ -3,14 +3,52 @@
   overflow-y: scroll;
 }
 
-.messages { height: 300px; overflow-y: auto; }
+.messages {
+  height: 300px;
+  overflow-y: auto;
+}
 
-.message { padding: 10px; border-bottom: 1px solid #eee; }
+.message {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
 
-.input-container { display: flex; gap: 10px; }
+  &.owner {
+    text-align: end;
+  }
 
-.owner {
-  text-align: end;
+  .avatar {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    margin-right: 10px;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  .message-info {
+    display: inline-block;
+    gap: 10px;
+
+    .user-name {
+      font-size: 10px;
+      color: #367be0;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .timestamp {
+      font-size: 10px;
+      color: #888;
+      display: inline-block;
+    }
+  }
+}
+
+.input-container {
+  display: flex;
+  gap: 10px;
 }
 
 emoji-picker {

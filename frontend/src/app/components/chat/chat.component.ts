@@ -10,12 +10,13 @@ import {Dialog} from 'primeng/dialog';
 import 'emoji-picker-element';
 
 import {Message, SocketServices} from '../../services/socket.services';
+import {SafeHtmlPipe} from 'primeng/menu';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [TranslateModule, CommonModule, FormsModule, MessageModule, InputTextModule, ButtonModule, SelectModule, Dialog],
+  imports: [TranslateModule, CommonModule, FormsModule, MessageModule, InputTextModule, ButtonModule, SelectModule, Dialog, SafeHtmlPipe],
   templateUrl: './chat.component.html',
   styleUrl: 'chat.component.scss'
 })

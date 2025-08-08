@@ -3,8 +3,26 @@
 
   <div class="messages" #messageContainer>
     @for (message of messages(); track message.timestamp) {
+
       <div class="message" [ngClass]="{'owner': message.owner}">
-        {{ message.text }} {{ message.emoji }}
+        @if (!message.owner) {
+          <div class="avatar">
+            <img [src]="message.avatar" [alt]="message.user.uid" [title]="message.userName">
+          </div>
+        }
+        <div class="message-info">
+          @if (!message.owner) {
+            <div class="user-name">
+              {{ message.userName }}
+            </div>
+          }
+          <div class="timestamp">
+            {{ message.timestamp | date: 'shortTime' }}
+          </div>
+          <div class="message-text">
+            {{ message.text }} {{ message.emoji }}
+          </div>
+        </div>
       </div>
     }
   </div>
