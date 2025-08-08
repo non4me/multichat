@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, Signal, signal} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, effect, ElementRef, inject, Signal, signal, ViewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MessageModule} from 'primeng/message';
@@ -20,6 +20,8 @@ import {Message, SocketServices} from '../../services/socket.services';
   styleUrl: 'chat.component.scss'
 })
 export class ChatComponent {
+  @ViewChild('messageContainer') messageContainer!: ElementRef<HTMLDivElement>;
+
   messages: Signal<Message[]>;
   newMessage = signal('');
   showEmojiPicker = signal(false);
@@ -29,6 +31,11 @@ export class ChatComponent {
 
   constructor() {
     this.messages = this.socketService.getMessages();
+
+    effect(() => {
+      this.messages();
+      this.scrollToBottom();
+    });
   }
 
   showDialog() {
@@ -52,6 +59,16 @@ export class ChatComponent {
 
       this.newMessage.set('');
       this.showEmojiPicker.set(false);
+    }
+  }
+
+  private scrollToBottom(): void {
+    if (this.messageContainer) {
+      const container = this.messageContainer.nativeElement;
+
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      })
     }
   }
 }

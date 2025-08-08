@@ -1,7 +1,7 @@
 <div class="chat-container">
 
 
-  <div class="messages">
+  <div class="messages" #messageContainer>
     @for (message of messages(); track message.timestamp) {
       <div class="message" [ngClass]="{'owner': message.owner}">
         {{ message.text }} {{ message.emoji }}
