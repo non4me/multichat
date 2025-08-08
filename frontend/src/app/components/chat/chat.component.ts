@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, Signal, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MessageModule} from 'primeng/message';
@@ -6,10 +6,10 @@ import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import {SelectModule} from 'primeng/select';
 import {TranslateModule} from '@ngx-translate/core';
-import 'emoji-picker-element';
-import {SocketServices} from '../../services/socket.services';
-import {AuthService} from '../../services/auth.service';
 import {Dialog} from 'primeng/dialog';
+import 'emoji-picker-element';
+
+import {Message, SocketServices} from '../../services/socket.services';
 
 @Component({
   selector: 'app-chat',
@@ -20,14 +20,12 @@ import {Dialog} from 'primeng/dialog';
   styleUrl: 'chat.component.scss'
 })
 export class ChatComponent {
-  messages;
+  messages: Signal<Message[]>;
   newMessage = signal('');
   showEmojiPicker = signal(false);
   isModalVisible = signal(false);
 
-  public authService = inject(AuthService);
   private socketService = inject(SocketServices);
-  private cdr = inject(ChangeDetectorRef);
 
   constructor() {
     this.messages = this.socketService.getMessages();
@@ -35,12 +33,10 @@ export class ChatComponent {
 
   showDialog() {
     this.isModalVisible.set(true);
-    // this.cdr.markForCheck();
   }
 
   onModalClose() {
     this.isModalVisible.set(false);
-    // this.cdr.markForCheck();
   }
 
   addEmoji(event: any) {
