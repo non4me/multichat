@@ -1,6 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {inject, Injectable, signal} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {SocketServices} from './socket.services';
 
 export interface Language {
   code: string;
@@ -14,6 +15,7 @@ export interface Language {
 export class LanguageService {
   private languagesUrl = 'assets/languages.json';
   private translate = inject(TranslateService);
+  private socketService = inject(SocketServices);
   private http = inject(HttpClient);
   private languages = signal<Language[]>([]);
   currentLanguage = signal<string>('en');
@@ -34,6 +36,7 @@ export class LanguageService {
     this.currentLanguage.set(language);
     localStorage.setItem('language', language)
     this.translate.use(language);
+    this.socketService.setUserLanguage(language);
   }
 
   getLanguages() {

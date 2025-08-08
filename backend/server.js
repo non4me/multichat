@@ -25,6 +25,7 @@ const getUserInfo = (socketUser) => {
 
     return name ? `${name}: (${email})` : `${provider_id}: ${user_id}`;
 }
+const cacheTranslation = new WeakMap();
 
 function getLocaleIdentifier(lang) {
     return lang === 'en' ? 'en-GB' : lang;
@@ -34,9 +35,21 @@ function translateMessage(originalMessage, sender) {
     return async (socket) => {
         const fromLang = originalMessage.sourceLang;
         const toLang = socket.user.lang;
-        const result = fromLang === toLang
-            ? {text: originalMessage.text}
-            : await translator.translateText(originalMessage.text, fromLang, getLocaleIdentifier(toLang));
+        const cacheKey = { fromLang, toLang, text: originalMessage.text };
+        let result = '';
+
+        if (fromLang === toLang) {
+            result = {text: originalMessage.text};
+        } else if (cacheTranslation.has(cacheKey)) {
+            result = cacheTranslation.get(cacheKey);
+        } else {
+            result = await translator.translateText(originalMessage.text, fromLang, getLocaleIdentifier(toLang));
+
+            console.log(`Translated from ${fromLang} to ${toLang}: ${originalMessage.text} -> ${result.text}`);
+
+            cacheTranslation.set(cacheKey, result);
+        }
+
         const message = {
             ...originalMessage,
             userName: getUserInfo(sender),

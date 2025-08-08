@@ -14,12 +14,15 @@ import {TranslateService} from '@ngx-translate/core';
 import {take} from 'rxjs';
 
 import {SocketServices} from './socket.services';
+import {LanguageService} from './language.service';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
   private auth = inject(Auth);
   private translate = inject(TranslateService);
   private socketService = inject(SocketServices);
+  private languageService = inject(LanguageService);
+  private currentLanguage = this.languageService.currentLanguage;
 
   currentUser = signal(null);
   isLoggedIn = signal(false);
@@ -96,7 +99,7 @@ export class AuthService {
 
   private successfulLogin() {
     this.currentUser()?.getIdToken().then((token: string) => {
-      this.socketService.initSocket(token, this.currentUser());
+      this.socketService.initSocket(token, this.currentUser(), this.currentLanguage());
     });
 
     localStorage.setItem('currentUser', JSON.stringify(this.currentUser()));

@@ -1,8 +1,7 @@
-import {inject, Injectable, Signal, signal} from '@angular/core';
+import {Injectable, Signal, signal} from '@angular/core';
 import {io, Socket} from 'socket.io-client';
 
 import {environment} from '../../environments/environment';
-import {LanguageService} from './language.service';
 
 export interface Message {
   id: number;
@@ -22,13 +21,13 @@ export interface Message {
 })
 export class SocketServices {
 
-  private languageService = inject(LanguageService);
+  private currentLanguage: string;
   private messages = signal<Message[]>([]);
   private messageId = 0;
   private currentUser: any;
   private socket: Socket;
 
-  initSocket(token: string, user: any) {
+  initSocket(token: string, user: any, language: string,) {
     this.currentUser = user;
     this.socket = io(environment.backendUrl, {auth: {token}});
     this.socket.on('message', (msg: Message) => {
@@ -37,15 +36,16 @@ export class SocketServices {
 
       this.messages.update(msgs => [...msgs, msg]);
     });
-    this.setUserLanguage();
+    this.setUserLanguage(language);
   }
 
   getMessages(): Signal<Message[]> {
     return this.messages;
   }
 
-  setUserLanguage() {
-    this.socket.emit('language', this.languageService.currentLanguage());
+  setUserLanguage(language: string) {
+    this.currentLanguage = language;
+    this.socket.emit('language', language);
   }
 
   sendMessage(message: string) {
@@ -55,7 +55,7 @@ export class SocketServices {
         owner: false,
         user: this.currentUser,
         text: message,
-        sourceLang: this.languageService.currentLanguage(),
+        sourceLang: this.currentLanguage,
         emoji: '',
         timestamp: new Date()
       };
