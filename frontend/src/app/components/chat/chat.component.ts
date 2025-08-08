@@ -35,6 +35,10 @@ export class ChatComponent {
     effect(() => {
       this.messages();
       this.scrollToBottom();
+
+      const message = this.messages()[this.messages().length - 1];
+
+      document.title = message?.text || 'MultiChat';
     });
   }
 
