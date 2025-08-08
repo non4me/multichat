@@ -16,7 +16,8 @@
       {{ 'google-login' | translate }}
     </p-button>
   } @else () {
-    <p-button label="Logout" (click)="authService.logout()"></p-button>
+    <p-button [style]="{'background-color': 'transparent', 'color': 'black', 'border-color': 'lightgray'}" label="Logout" (click)="authService.logout()"></p-button>
+
     <router-outlet></router-outlet>
   }
 </div>
