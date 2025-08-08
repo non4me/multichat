@@ -5,6 +5,8 @@ const socketIo = require('socket.io');
 const admin = require('firebase-admin');
 const cors = require('cors');
 const deepl = require('deepl-node');
+const crypto = require('crypto');
+const LRU = require('lru-cache');
 
 const app = express();
 const server = http.createServer(app);
@@ -25,39 +27,54 @@ const getUserInfo = (socketUser) => {
 
     return name ? `${name}: (${email})` : `${provider_id}: ${user_id}`;
 }
-const cacheTranslation = new WeakMap();
+const cacheTranslation = new LRU({
+  max: 1000,
+  ttl: 1000 * 60 * 60 * 24, // 24h
+  allowStale: true
+});
 
 function getLocaleIdentifier(lang) {
     return lang === 'en' ? 'en-GB' : lang;
 }
 
+function makeCacheKey(text, from, to) {
+  const hash = crypto.createHash('sha1').update(text).digest('hex');
+  return `${from}:${to}:${hash}`;
+}
+
 function translateMessage(originalMessage, sender) {
-    return async (socket) => {
-        const fromLang = originalMessage.sourceLang;
-        const toLang = socket.user.lang;
-        const cacheKey = { fromLang, toLang, text: originalMessage.text };
-        let result = '';
+  return async (socket) => {
+    const fromLang = originalMessage.sourceLang;
+    const toLang = socket.user.lang;
+    let translated;
 
-        if (fromLang === toLang) {
-            result = {text: originalMessage.text};
-        } else if (cacheTranslation.has(cacheKey)) {
-            result = cacheTranslation.get(cacheKey);
-        } else {
-            result = await translator.translateText(originalMessage.text, fromLang, getLocaleIdentifier(toLang));
+    if (fromLang === toLang) {
+      translated = originalMessage.text;
+    } else {
+      const key = makeCacheKey(originalMessage.text, fromLang, toLang);
+      const cached = cacheTranslation.get(key);
 
-            console.log(`Translated from ${fromLang} to ${toLang}: ${originalMessage.text} -> ${result.text}`);
-
-            cacheTranslation.set(cacheKey, result);
-        }
-
-        const message = {
-            ...originalMessage,
-            userName: getUserInfo(sender),
-            text: result.text
-        };
-
-        socket.emit('message', message);
+      if (cached) {
+        translated = cached;
+        // console.log(`Cache hit: ${key}`);
+      } else {
+        console.log(`Cache miss: ${key}`);
+        const res = await translator.translateText(
+          originalMessage.text,
+          fromLang,
+          getLocaleIdentifier(toLang)
+        );
+        translated = res.text;
+        cacheTranslation.set(key, translated);
+      }
     }
+
+    socket.emit('message', {
+      ...originalMessage,
+      userName: getUserInfo(sender),
+      text: translated
+    });
+  };
 }
 
 io.use(async (socket, next) => {
