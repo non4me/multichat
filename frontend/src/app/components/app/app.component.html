@@ -1,4 +1,8 @@
-<div class="container m-10 mx-auto max-w-md p-6 bg-white dark:bg-gray-800 border-2 border-blue-500 rounded-lg shadow-lg">
+<div class="text-red-500">
+  {{ authService.errorMessage() }}
+</div>
+
+<div class="container m-10 mx-auto p-6 bg-white dark:bg-gray-800 border-2 border-blue-500 rounded-lg shadow-lg">
   <div class="float-right">
     <app-language-selector></app-language-selector>
   </div>
@@ -11,10 +15,6 @@
     <p-button (click)="authService.signInWithGoogle()" class="m-8">
       {{ 'google-login' | translate }}
     </p-button>
-
-    <div>
-      {{ authService.errorMessage() }}
-    </div>
   } @else () {
     <router-outlet></router-outlet>
   }

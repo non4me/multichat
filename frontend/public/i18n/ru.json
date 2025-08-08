@@ -6,6 +6,7 @@
   "anonymous-login": "Зайти анонимно",
   "google-login": "Зайти через Google",
   "select-emoji": "Выберите эмодзи",
+  "select-language": "Выберите язык",
   "message" : {
     "placeholder": "Введите сообщение..."
   }

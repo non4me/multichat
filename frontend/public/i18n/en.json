@@ -6,6 +6,7 @@
   "anonymous-login": "Anonymous login",
   "google-login": "Login with Google",
   "select-emoji": "Select emoji",
+  "select-language": "Select language",
   "message" : {
     "placeholder": "Enter your message..."
   }

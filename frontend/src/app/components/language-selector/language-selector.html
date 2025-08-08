@@ -3,7 +3,7 @@
   [(ngModel)]="selectedLanguage"
   optionLabel="name"
   optionValue="code"
-  placeholder="Выберите язык"
+  [placeholder]="'select-language' | translate"
   (onChange)="onLanguageChange($event)"
   class="w-full md:w-32"
   panelStyleClass="bg-gray dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
