@@ -32,6 +32,7 @@ export class LanguageService {
 
   setLanguage(language: string) {
     this.currentLanguage.set(language);
+    localStorage.setItem('language', language)
     this.translate.use(language);
   }
 
