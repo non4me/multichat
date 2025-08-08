@@ -1,9 +1,8 @@
 import {inject, Injectable, Signal, signal} from '@angular/core';
 import {io, Socket} from 'socket.io-client';
+
 import {environment} from '../../environments/environment';
 import {LanguageService} from './language.service';
-import * as randomAvatarGenerator from '@fractalsoftware/random-avatar-generator';
-import {getAvatarFromData} from '@fractalsoftware/random-avatar-generator';
 
 export interface Message {
   id: number;

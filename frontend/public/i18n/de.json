@@ -1,0 +1,13 @@
+{
+  "send": "Senden",
+  "email": "E-Mail",
+  "password": "Passwort",
+  "sing-in": "Anmelden",
+  "anonymous-login": "Anonyme Anmeldung",
+  "google-login": "Mit Google anmelden",
+  "select-emoji": "Emoji auswählen",
+  "select-language": "Sprache auswählen",
+  "message": {
+    "placeholder": "Geben Sie Ihre Nachricht ein..."
+  }
+}

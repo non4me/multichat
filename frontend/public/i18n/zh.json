@@ -1,0 +1,13 @@
+{
+  "send": "发送",
+  "email": "电子邮件",
+  "password": "密码",
+  "sing-in": "登录",
+  "anonymous-login": "匿名登录",
+  "google-login": "使用Google登录",
+  "select-emoji": "选择表情",
+  "select-language": "选择语言",
+  "message": {
+    "placeholder": "输入您的消息..."
+  }
+}

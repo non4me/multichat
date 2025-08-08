@@ -12,6 +12,7 @@ import {
 import {browserLocalPersistence, setPersistence} from 'firebase/auth';
 import {TranslateService} from '@ngx-translate/core';
 import {take} from 'rxjs';
+
 import {SocketServices} from './socket.services';
 
 @Injectable({providedIn: 'root'})

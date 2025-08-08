@@ -1,0 +1,13 @@
+{
+  "send": "Odeslat",
+  "email": "E-mail",
+  "password": "Heslo",
+  "sing-in": "Přihlásit se",
+  "anonymous-login": "Anonymní přihlášení",
+  "google-login": "Přihlásit se přes Google",
+  "select-emoji": "Vybrat emoji",
+  "select-language": "Vybrat jazyk",
+  "message": {
+    "placeholder": "Zadejte vaši zprávu..."
+  }
+}

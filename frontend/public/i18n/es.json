@@ -1,0 +1,13 @@
+{
+  "send": "Enviar",
+  "email": "Correo electrónico",
+  "password": "Contraseña",
+  "sing-in": "Iniciar sesión",
+  "anonymous-login": "Inicio de sesión anónimo",
+  "google-login": "Iniciar sesión con Google",
+  "select-emoji": "Seleccionar emoji",
+  "select-language": "Seleccionar idioma",
+  "message": {
+    "placeholder": "Introduce tu mensaje..."
+  }
+}
