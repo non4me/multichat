@@ -5,7 +5,8 @@ import {LanguageService} from './language.service';
 
 export interface Message {
   id: number;
-  user: string;
+  owner: boolean;
+  user: any;
   text: string;
   translatedText?: string;
   sourceLang: string;
@@ -21,13 +22,15 @@ export class SocketServices {
   private languageService = inject(LanguageService);
   private messages = signal<Message[]>([]);
   private messageId = 0;
-  private currentUser = 'Anonymous';
+  private currentUser: any;
   private socket: Socket;
 
   initSocket(token: string, user: any) {
     this.currentUser = user;
     this.socket = io(environment.backendUrl, { auth: { token } });
     this.socket.on('message', (msg: Message) => {
+      msg.owner = msg.user.uid === this.currentUser.uid
+
       this.messages.update(msgs => [...msgs, msg]);
     });
     this.setUserLanguage();
@@ -45,6 +48,7 @@ export class SocketServices {
     if (message) {
       const newMessage: Message = {
         id: this.messageId++,
+        owner: false,
         user: this.currentUser,
         text: message,
         sourceLang: this.languageService.currentLanguage(),

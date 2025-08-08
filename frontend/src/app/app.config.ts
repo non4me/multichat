@@ -15,7 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    // provideZoneChangeDetection({eventCoalescing: true}),
     provideZonelessChangeDetection(),
     provideAuth(() => getAuth()),
     providePrimeNG({

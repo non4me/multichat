@@ -33,9 +33,8 @@ function translateMessage(originalMessage) {
             ? {text: originalMessage.text}
             : await translator.translateText(originalMessage.text, fromLang, getLocaleIdentifier(toLang));
         const message = {
-            user: socket.user,
-            text: result.text,
-            timestamp: new Date()
+            ...originalMessage,
+            text: result.text
         };
 
         socket.emit('message', message);

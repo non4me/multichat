@@ -3,7 +3,7 @@
 
   <div class="messages">
     @for (message of messages(); track message.timestamp) {
-      <div class="message">
+      <div class="message" [ngClass]="{'owner': message.owner}">
         {{ message.text }} {{ message.emoji }}
       </div>
     }
