@@ -2,6 +2,7 @@ import {Injectable, Signal, signal} from '@angular/core';
 import {io, Socket} from 'socket.io-client';
 
 import {environment} from '../../environments/environment';
+import {AvatarService} from './avatar-service';
 
 export interface Message {
   id: number;
@@ -32,7 +33,7 @@ export class SocketServices {
     this.socket = io(environment.backendUrl, {auth: {token}});
     this.socket.on('message', (msg: Message) => {
       msg.owner = msg.user.uid === this.currentUser.uid
-      msg.avatar = this.generateAvatar(msg.user.uid);
+      msg.avatar = AvatarService.generateAvatar(msg.user.uid);
 
       this.messages.update(msgs => [...msgs, msg]);
     });
@@ -66,26 +67,5 @@ export class SocketServices {
 
   logout() {
     this.socket.disconnect();
-  }
-
-  private generateAvatar(uuid: string, foregroundColor = '#fff', backgroundColor='#367be0') {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-
-    canvas.width = 200;
-    canvas.height = 200;
-
-    // Draw background
-    context.fillStyle = backgroundColor;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw text
-    context.font = "bold 100px Assistant";
-    context.fillStyle = foregroundColor;
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.fillText(uuid, canvas.width / 2, canvas.height / 2);
-
-    return canvas.toDataURL("image/png");
   }
 }
