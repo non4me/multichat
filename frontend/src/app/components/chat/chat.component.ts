@@ -1,4 +1,14 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, effect, ElementRef, inject, Signal, signal, ViewChild} from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject, Injector,
+  signal,
+  Signal,
+  ViewChild
+} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MessageModule} from 'primeng/message';
@@ -30,15 +40,20 @@ export class ChatComponent {
   private socketService = inject(SocketServices);
 
   constructor() {
+    const destroyRef = inject(DestroyRef);
     this.messages = this.socketService.getMessages();
 
-    effect(() => {
+    const effectRef = effect(() => {
       this.messages();
       this.scrollToBottom();
 
       const message = this.messages()[this.messages().length - 1];
 
       document.title = message?.text || 'MultiChat';
+    });
+
+    destroyRef.onDestroy(() => {
+      effectRef.destroy();
     });
   }
 
