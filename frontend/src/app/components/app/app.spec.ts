@@ -1,13 +1,14 @@
-import {TestBed} from '@angular/core/testing';
-import {AppComponent} from './app.component';
-import {AuthService} from '../../services/auth.service';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {TestBed} from '@angular/core/testing';
 import {RouterOutlet} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
+
+import {AppComponent} from './app.component';
 import {LanguageSelector} from '../language-selector/language-selector';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {AuthService} from '../../services/auth.service';
 
 describe('AppComponent', () => {
   let mockAuthService: Partial<AuthService>;

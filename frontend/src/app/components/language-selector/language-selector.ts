@@ -1,9 +1,9 @@
+import {TranslatePipe} from '@ngx-translate/core';
 import {Component, inject} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Select} from 'primeng/select';
 
 import {LanguageService} from '../../services/language.service';
-import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-language-selector',
