@@ -37,7 +37,10 @@ export class LanguageService {
     this.currentLanguage.set(language);
     localStorage.setItem('language', language)
     this.translate.use(language);
-    this.socketService.setUserLanguage(language);
+    // Guard against emitting before socket connection to avoid runtime errors
+    if (this.socketService['socket']) {
+      this.socketService.setUserLanguage(language);
+    }
   }
 
   getLanguages() {
