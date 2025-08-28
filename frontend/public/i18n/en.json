@@ -9,5 +9,9 @@
   "select-language": "Select language",
   "message" : {
     "placeholder": "Enter your message..."
+  },
+  "auth": {
+    "anonymous_disabled": "Anonymous login is disabled. Please contact the administrator.",
+    "generic_error": "An error occurred: {{message}}"
   }
 }

@@ -9,5 +9,9 @@
   "select-language": "Vybrat jazyk",
   "message": {
     "placeholder": "Zadejte vaši zprávu..."
+  },
+  "auth": {
+    "anonymous_disabled": "Anonymní přihlášení je deaktivováno. Kontaktujte prosím administrátora.",
+    "generic_error": "Došlo k chybě: {{message}}"
   }
 }

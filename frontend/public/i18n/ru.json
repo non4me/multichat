@@ -9,5 +9,9 @@
   "select-language": "Выберите язык",
   "message" : {
     "placeholder": "Введите сообщение..."
+  },
+  "auth": {
+    "anonymous_disabled": "Анонимный вход отключён. Пожалуйста, обратитесь к администратору.",
+    "generic_error": "Произошла ошибка: {{message}}"
   }
 }

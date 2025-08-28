@@ -9,5 +9,9 @@
   "select-language": "Sprache auswählen",
   "message": {
     "placeholder": "Geben Sie Ihre Nachricht ein..."
+  },
+  "auth": {
+    "anonymous_disabled": "Anonymer Login ist deaktiviert. Bitte wenden Sie sich an den Administrator.",
+    "generic_error": "Es ist ein Fehler aufgetreten: {{message}}"
   }
 }

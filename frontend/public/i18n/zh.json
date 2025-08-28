@@ -9,5 +9,9 @@
   "select-language": "选择语言",
   "message": {
     "placeholder": "输入您的消息..."
+  },
+  "auth": {
+    "anonymous_disabled": "匿名登录已禁用。请联系管理员。",
+    "generic_error": "发生错误：{{message}}"
   }
 }

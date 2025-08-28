@@ -9,5 +9,9 @@
   "select-language": "Seleccionar idioma",
   "message": {
     "placeholder": "Introduce tu mensaje..."
+  },
+  "auth": {
+    "anonymous_disabled": "El inicio de sesión anónimo está deshabilitado. Por favor, contacta al administrador.",
+    "generic_error": "Ocurrió un error: {{message}}"
   }
 }
