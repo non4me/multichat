@@ -4,7 +4,8 @@ const http = require('http');
 const socketIo = require('socket.io');
 const admin = require('firebase-admin');
 const cors = require('cors');
-const deepl = require('deepl-node');
+// const deepl = require('deepl-node'); // Replaced with Aya-Expanse MCP Server
+const { Translator } = require('./ayaTranslator');
 const crypto = require('crypto');
 const LRU = require('lru-cache');
 
@@ -20,7 +21,11 @@ app.use(express.json());
 const serviceAccount = require('./firebase.json');
 admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
-const translator = new deepl.Translator(process.env.DEEPL_API_KEY);
+// Initialize Aya-Expanse translator (DeepL-compatible)
+const translator = new Translator(process.env.AYA_API_KEY || process.env.DEEPL_API_KEY, {
+    baseURL: process.env.AYA_SERVER_URL || 'http://localhost:3001',
+    timeout: 30000
+});
 const connections = new Set();
 const getUserInfo = (socketUser) => {
     const {name, email, provider_id, user_id} = socketUser;

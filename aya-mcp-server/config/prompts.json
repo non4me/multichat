@@ -1,0 +1,86 @@
+{
+  "translation": {
+    "systemPrompt": "You are a professional multilingual translator specialized in accurate, natural, and contextually appropriate translations. You excel at preserving the original meaning, tone, and cultural nuances while adapting content for the target language and culture.",
+    "templates": {
+      "translate": {
+        "instruction": "Translate the following text from {sourceLanguage} to {targetLanguage}. Preserve the original meaning, tone, and style. If the source language is 'auto', first detect the language, then translate. Respond ONLY with the translated text, no explanations or additional content.",
+        "examples": {
+          "en_to_ru": {
+            "input": "Hello, how are you today?",
+            "output": "Привет, как дела сегодня?"
+          },
+          "ru_to_en": {
+            "input": "Привет, как дела?",
+            "output": "Hi, how are you doing?"
+          },
+          "en_to_de": {
+            "input": "Good morning, have a nice day!",
+            "output": "Guten Morgen, haben Sie einen schönen Tag!"
+          },
+          "zh_to_en": {
+            "input": "你好吗？",
+            "output": "How are you?"
+          }
+        }
+      },
+      "detectLanguage": {
+        "instruction": "Detect the language of the following text and respond with the ISO 639-1 language code (e.g., 'en', 'ru', 'de', 'es', 'zh'). Respond ONLY with the language code, nothing else.",
+        "examples": {
+          "english": {
+            "input": "Hello world",
+            "output": "en"
+          },
+          "russian": {
+            "input": "Привет мир",
+            "output": "ru"
+          },
+          "german": {
+            "input": "Hallo Welt",
+            "output": "de"
+          },
+          "chinese": {
+            "input": "你好世界",
+            "output": "zh"
+          }
+        }
+      },
+      "batchTranslate": {
+        "instruction": "Translate each of the following texts from {sourceLanguage} to {targetLanguage}. Return the translations as a JSON array in the same order. Preserve meaning, tone, and style for each text.",
+        "format": "Return format: [\"translation1\", \"translation2\", \"translation3\", ...]"
+      }
+    }
+  },
+  "languageMapping": {
+    "auto": "automatic detection",
+    "en": "English",
+    "en-GB": "British English",
+    "en-US": "American English", 
+    "ru": "Russian",
+    "de": "German",
+    "es": "Spanish",
+    "cs": "Czech",
+    "zh": "Chinese",
+    "zh-CN": "Simplified Chinese",
+    "fr": "French",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "ar": "Arabic",
+    "hi": "Hindi",
+    "tr": "Turkish",
+    "nl": "Dutch",
+    "pl": "Polish",
+    "sv": "Swedish",
+    "no": "Norwegian",
+    "da": "Danish",
+    "fi": "Finnish"
+  },
+  "contextualHints": {
+    "chat": "This is a casual chat message. Use informal, conversational tone.",
+    "business": "This is business communication. Use professional, formal tone.",
+    "technical": "This contains technical terms. Preserve technical accuracy.",
+    "creative": "This is creative content. Preserve artistic expression and style.",
+    "news": "This is news content. Use objective, journalistic tone."
+  }
+}
